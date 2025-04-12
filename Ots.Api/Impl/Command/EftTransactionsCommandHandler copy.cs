@@ -25,10 +25,10 @@ public class EftTransactionsCommandHandler : IRequestHandler<CreateEftTransactio
     {
         var account = await dbContext.Set<Account>().FirstOrDefaultAsync(x => x.Id == request.EftTransaction.AccountId, cancellationToken);
         if (account == null)
-            return new ApiResponse<TransactionResponse>("Account not found");
+            return new ApiResponse<TransactionResponse>("Account not found. Please contact support.");
 
         if (!account.IsActive)
-            return new ApiResponse<TransactionResponse>("Account is not active");
+            return new ApiResponse<TransactionResponse>("Account is not active. Please contact support.");
 
         var feeAmount = request.EftTransaction.Amount * 0.04m; // 4% fee
         var refNumber = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);

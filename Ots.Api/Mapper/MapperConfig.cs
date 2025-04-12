@@ -11,6 +11,9 @@ public class MapperConfig : Profile
         CreateMap<CustomerRequest, Customer>();
         CreateMap<Customer, CustomerResponse>();
 
+        CreateMap<UserRequest, User>();
+        CreateMap<User, UserResponse>();
+
         CreateMap<AccountRequest, Account>();
         CreateMap<Account, AccountResponse>()
         .ForMember(dest => dest.CustomerName, opt => opt.MapFrom(src => src.Customer.FirstName + " " + src.Customer.LastName))

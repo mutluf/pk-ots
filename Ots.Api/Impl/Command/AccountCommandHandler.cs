@@ -24,6 +24,7 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
 
     public async Task<ApiResponse> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
+        // check if account exists
         var entity = await dbContext.Set<Account>().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         if (entity == null)
             return new ApiResponse("Account not found");
@@ -31,11 +32,13 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
         if (!entity.IsActive)
             return new ApiResponse("Account is not active");
 
+        // soft delete
         entity.IsActive = false;
         entity.CloseDate = DateTime.Now;
         entity.UpdatedDate = DateTime.Now;
         entity.UpdatedUser = null;
 
+        // update record
         await dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
     }

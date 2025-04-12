@@ -12,7 +12,16 @@ public class AccountService : IAccountService
         this.dbContext = dbContext;
     }
 
-    public async Task<ApiResponse> CreateIncomingAccountTransaction(long accountId, decimal amount, string description, string refNumber)
+    /// <summary>
+    /// Creates an incoming account transaction, adding the specified amount to the account balance.
+    /// </summary>
+    /// <param name="accountId">The ID of the account.</param>
+    /// <param name="amount">The amount of the transaction. Must be greater than zero.</param>
+    /// <param name="description">The description of the transaction. Must not be empty.</param>
+    /// <param name="refNumber">The reference number of the transaction. Must not be empty.</param>
+    /// <returns>A response indicating the success or failure of the operation.</returns>
+    public async Task<ApiResponse> CreateIncomingAccountTransaction(long accountId, decimal amount, 
+    string description, string refNumber)
     {
         if (amount <= 0)
             return new ApiResponse("Amount must be greater than zero");
@@ -48,14 +57,24 @@ public class AccountService : IAccountService
         return new ApiResponse();
     }
 
-    public async Task<ApiResponse> CreateOutgoingAccountTransaction(long accountId, decimal amount, decimal feeAmount, string description, string refNumber)
+    /// <summary>
+    /// Creates an outgoing account transaction, subtracting the amount and fee from the account balance.
+    /// </summary>
+    /// <param name="accountId">The id of the account</param>
+    /// <param name="amount">The amount of the transaction. Must be greater than zero.</param>
+    /// <param name="feeAmount">The amount of fee. Must be greater than or equal to zero.</param>
+    /// <param name="description">The description of the transaction. Must not be empty.</param>
+    /// <param name="refNumber">The reference number of the transaction. Must not be empty.</param>
+    /// <returns>A response indicating success or failure</returns>
+    public async Task<ApiResponse> CreateOutgoingAccountTransaction(long accountId, decimal amount, 
+    decimal feeAmount, string description, string refNumber)
     {
         if (amount <= 0)
-            return new ApiResponse("Amount must be greater than zero");
+            return new ApiResponse("Amount must be greater than zero. Please contact support.");
         if (string.IsNullOrEmpty(description))
-            return new ApiResponse("Description cannot be empty");
+            return new ApiResponse("Description cannot be empty. Please contact support.");
         if (string.IsNullOrEmpty(refNumber))
-            return new ApiResponse("Reference number cannot be empty");
+            return new ApiResponse("Reference number cannot be empty. Please contact support.");
 
         var account = await dbContext.Set<Account>().FirstOrDefaultAsync(x => x.Id == accountId);
         if (account == null)
@@ -76,7 +95,7 @@ public class AccountService : IAccountService
             InsertedUser = "System",
             ReferenceNumber = refNumber,
         };
-        
+
         if (feeAmount > 0)
         {
             var accountTransactionFee = new AccountTransaction
