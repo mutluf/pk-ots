@@ -90,6 +90,26 @@ public class Startup
                     { securityScheme, new string[] { } }
             });
         });
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+        });
+
+        services.AddScoped<IAppSession>(provider =>
+        {
+            var httpContextAccessor = provider.GetService<IHttpContextAccessor>();
+            AppSession appSession = JwtManager.GetSession(httpContextAccessor.HttpContext);
+            return appSession;
+        });
+
+        
     }
 
 
