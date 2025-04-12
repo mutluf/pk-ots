@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Ots.Base;
 
 namespace Ots.Api.Domain;
 

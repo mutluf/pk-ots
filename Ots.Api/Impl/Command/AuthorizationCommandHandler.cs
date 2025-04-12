@@ -25,11 +25,11 @@ IRequestHandler<CreateAuthorizationTokenCommand, ApiResponse<AuthorizationRespon
     {
         var user = await dbContext.Set<User>().FirstOrDefaultAsync(x => x.UserName == request.Request.UserName, cancellationToken);
         if (user == null)
-            return new ApiResponse<AuthorizationResponse>("User not found");
+            return new ApiResponse<AuthorizationResponse>("User name or password is incorrect");
 
         var hashedPassword = PasswordGenerator.CreateMD5(request.Request.Password, user.Secret);
         if (hashedPassword != user.Password)
-            return new ApiResponse<AuthorizationResponse>("Invalid password");
+            return new ApiResponse<AuthorizationResponse>("User name or password is incorrect");
 
         var token = tokenService.GenerateToken(user);
         var entity = new AuthorizationResponse
