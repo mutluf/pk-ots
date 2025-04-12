@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Ots.Api.Domain;
 using Ots.Base;
 
@@ -27,8 +28,8 @@ public class OtsDbContext : DbContext
             var changedProperties = properties.Where(p => p.IsModified).ToList();
             var changedValues = changedProperties.ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
             var originalValues = properties.ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
-            var changedValuesString = string.Join(", ", changedValues.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
-            var originalValuesString = string.Join(", ", originalValues.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+            var changedValuesString = JsonConvert.SerializeObject(changedValues.Select(kvp => new { Key = kvp.Key, Value = kvp.Value }));
+            var originalValuesString = JsonConvert.SerializeObject(originalValues.Select(kvp => new { Key = kvp.Key, Value = kvp.Value }));
 
 
             var auditLog = new AuditLog
