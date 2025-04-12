@@ -4,12 +4,14 @@ using Ots.Api.Domain;
 using Ots.Api.Impl.Cqrs;
 using Ots.Base;
 using Ots.Schema;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ots.Api.Controllers;
 
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CustomersController : ControllerBase
 {
     private readonly IMediator mediator;

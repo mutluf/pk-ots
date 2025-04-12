@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ots.Api.Domain;
 using Ots.Api.Impl.Cqrs;
@@ -10,6 +11,7 @@ namespace Ots.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class AccountsController : ControllerBase
 {
     private readonly IMediator mediator;
@@ -46,7 +48,7 @@ public class AccountsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ApiResponse> Put([FromRoute] int id, [FromBody] AccountRequest Account)
     {
-        var operation = new UpdateAccountCommand(id,Account);
+        var operation = new UpdateAccountCommand(id, Account);
         var result = await mediator.Send(operation);
         return result;
     }

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ots.Api.Impl.Cqrs;
 using Ots.Base;
+using Microsoft.AspNetCore.Authorization;
 using Ots.Schema;
 
 namespace Ots.Api.Controllers;
@@ -9,6 +10,7 @@ namespace Ots.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IMediator mediator;

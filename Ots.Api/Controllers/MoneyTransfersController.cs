@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Ots.Api.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Ots.Api.Impl.Cqrs;
 using Ots.Base;
 using Ots.Schema;
@@ -10,6 +10,7 @@ namespace Ots.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MoneyTransfersController : ControllerBase
 {
     private readonly IMediator mediator;

@@ -59,6 +59,7 @@ public class Employee
 
 [ApiController]
 [Route("api/[controller]")]
+[NonController]
 public class EmployeeController : ControllerBase
 {
 
