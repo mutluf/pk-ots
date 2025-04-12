@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ots.Api;
@@ -12,9 +13,11 @@ using Ots.Api;
 namespace Ots.Api.Migrations.MsSql
 {
     [DbContext(typeof(OtsDbContext))]
-    partial class OtsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250412112950_Audit")]
+    partial class Audit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,9 +171,6 @@ namespace Ots.Api.Migrations.MsSql
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<string>("ChangedValues")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EntityId")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
@@ -178,9 +178,6 @@ namespace Ots.Api.Migrations.MsSql
                     b.Property<string>("EntityName")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
-
-                    b.Property<string>("OriginalValues")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Timestamp")
                         .HasColumnType("datetime2");
