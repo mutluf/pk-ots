@@ -52,8 +52,6 @@ IRequestHandler<DeleteCustomerAddressCommand, ApiResponse>
         entity.ZipCode = request.CustomerAddress.ZipCode;
         entity.CountryCode = request.CustomerAddress.CountryCode;
         entity.IsDefault = request.CustomerAddress.IsDefault;
-        entity.UpdatedDate = DateTime.Now;
-        entity.UpdatedUser = null;
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
@@ -62,8 +60,6 @@ IRequestHandler<DeleteCustomerAddressCommand, ApiResponse>
     public async Task<ApiResponse<CustomerAddressResponse>> Handle(CreateCustomerAddressCommand request, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<CustomerAddress>(request.CustomerAddress);
-        mapped.InsertedDate = DateTime.Now;
-        mapped.InsertedUser = "test";
         mapped.IsActive = true;
         mapped.CustomerId = request.CustomerId;
 

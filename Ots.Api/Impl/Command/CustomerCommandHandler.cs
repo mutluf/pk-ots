@@ -60,9 +60,7 @@ IRequestHandler<DeleteCustomerCommand, ApiResponse>
     public async Task<ApiResponse<CustomerResponse>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<Customer>(request.customer);
-        mapped.InsertedDate = DateTime.Now;
         mapped.OpenDate = DateTime.Now;
-        mapped.InsertedUser = "test";
         mapped.CustomerNumber = new Random().Next(1000000, 999999999);
         mapped.IsActive = true;
 

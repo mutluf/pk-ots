@@ -53,8 +53,6 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
             return new ApiResponse("Account is not active");
 
         entity.Name = request.Account.Name;
-        entity.UpdatedDate = DateTime.Now;
-        entity.UpdatedUser = null;
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
@@ -63,8 +61,6 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
     public async Task<ApiResponse<AccountResponse>> Handle(CreateAccountCommand request, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<Account>(request.Account);
-        mapped.InsertedDate = DateTime.Now;
-        mapped.InsertedUser = "test";
         mapped.IsActive = true;
         mapped.AccountNumber = new Random().Next(100000000, 999999999);
         mapped.IBAN = "TR" + mapped.AccountNumber.ToString("D20");

@@ -47,8 +47,6 @@ IRequestHandler<DeleteCustomerPhoneCommand, ApiResponse>
             return new ApiResponse("CustomerPhone is not active");
 
         entity.PhoneNumber = request.CustomerPhone.PhoneNumber;
-        entity.UpdatedDate = DateTime.Now;
-        entity.UpdatedUser = null;
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
@@ -57,8 +55,6 @@ IRequestHandler<DeleteCustomerPhoneCommand, ApiResponse>
     public async Task<ApiResponse<CustomerPhoneResponse>> Handle(CreateCustomerPhoneCommand request, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<CustomerPhone>(request.CustomerPhone);
-        mapped.InsertedDate = DateTime.Now;
-        mapped.InsertedUser = "test";
         mapped.IsActive = true;
 
         var entity = await dbContext.AddAsync(mapped, cancellationToken);

@@ -15,12 +15,14 @@ IRequestHandler<DeleteUserCommand, ApiResponse>
 {
     private readonly OtsDbContext dbContext;
     private readonly IMapper mapper;
-
-    public UserCommandHandler(OtsDbContext dbContext, IMapper mapper)
+    private readonly IAppSession appSession;
+    public UserCommandHandler(OtsDbContext dbContext, IMapper mapper, IAppSession appSession)
     {
+        this.appSession = appSession;
         this.dbContext = dbContext;
         this.mapper = mapper;
     }
+
 
     public async Task<ApiResponse> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
@@ -48,9 +50,7 @@ IRequestHandler<DeleteUserCommand, ApiResponse>
 
         entity.FirstName = request.User.FirstName;
         entity.LastName = request.User.LastName;
-        entity.Role = request.User.Role;        
-        entity.UpdatedDate = DateTime.Now;
-        entity.UpdatedUser = null;
+        entity.Role = request.User.Role;
 
         await dbContext.SaveChangesAsync(cancellationToken);
         return new ApiResponse();
@@ -59,9 +59,7 @@ IRequestHandler<DeleteUserCommand, ApiResponse>
     public async Task<ApiResponse<UserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
         var mapped = mapper.Map<User>(request.User);
-        mapped.InsertedDate = DateTime.Now;
         mapped.OpenDate = DateTime.Now;
-        mapped.InsertedUser = "test";
         mapped.IsActive = true;
         mapped.Secret = PasswordGenerator.GeneratePassword(30);
 

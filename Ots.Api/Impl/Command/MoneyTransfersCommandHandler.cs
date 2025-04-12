@@ -58,8 +58,6 @@ public class MoneyTransfersCommandHandler : IRequestHandler<CreateMoneyTransferC
             TransactionDate = DateTime.Now,
             ReferenceNumber = refNumber,
             FeeAmount = feeAmount,
-            InsertedDate = DateTime.Now,
-            InsertedUser = "System",
         };
 
         await dbContext.Set<MoneyTransfer>().AddAsync(MoneyTransfer, cancellationToken);

@@ -46,9 +46,7 @@ public class EftTransactionsCommandHandler : IRequestHandler<CreateEftTransactio
             PaymentCategoryCode = request.EftTransaction.PaymentCategoryCode,
             TransactionDate = DateTime.Now,
             ReferenceNumber = refNumber,
-            FeeAmount = feeAmount,
-            InsertedDate = DateTime.Now,
-            InsertedUser = "System",
+            FeeAmount = feeAmount
         };
 
         await dbContext.Set<EftTransaction>().AddAsync(eftTransaction, cancellationToken);
