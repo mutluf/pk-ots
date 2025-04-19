@@ -20,6 +20,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     public IGenericRepository<AccountTransaction> AccountTransactionRepository => new GenericRepository<AccountTransaction>(dbContext);
     public IGenericRepository<EftTransaction> EftTransactionRepository => new GenericRepository<EftTransaction>(dbContext);
     public IGenericRepository<User> UserRepository => new GenericRepository<User>(dbContext);
+    public IGenericRepository<Country> CountryRepository => new GenericRepository<Country>(dbContext);
 
     public async Task Complete()
     {

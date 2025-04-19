@@ -1,8 +1,10 @@
+using System.Configuration;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,6 +16,7 @@ using Ots.Api.Mapper;
 using Ots.Api.Middleware;
 using Ots.Base;
 using Serilog;
+using StackExchange.Redis;
 
 namespace Ots.Api;
 
@@ -33,6 +36,18 @@ public class Startup
             x.RegisterValidatorsFromAssemblyContaining<CustomerValidator>();
         });
 
+        services.AddControllersWithViews(options => 
+        {
+            options.CacheProfiles.Add("Default45",
+                new CacheProfile
+                {
+                    Duration = 45,
+                    Location = ResponseCacheLocation.Any,
+                    NoStore = false
+                });
+        });
+        
+
         services.AddSingleton(new MapperConfiguration(x => x.AddProfile(new MapperConfig())).CreateMapper());
 
         services.AddDbContext<OtsDbContext>(options =>
@@ -48,6 +63,9 @@ public class Startup
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddResponseCaching();
+        services.AddMemoryCache();
 
         services.AddAuthentication(x =>
         {
@@ -112,7 +130,14 @@ public class Startup
             return appSession;
         });
 
-
+        var resdisConnection = new ConfigurationOptions();
+        resdisConnection.EndPoints.Add(Configuration["Redis:Host"],Convert.ToInt32(Configuration["Redis:Port"]));
+        resdisConnection.DefaultDatabase = 0;
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.ConfigurationOptions = resdisConnection;
+            options.InstanceName = Configuration["Redis:InstanceName"];
+        });
     }
 
 
@@ -142,6 +167,7 @@ public class Startup
         app.UseAuthentication();
         app.UseRouting();
         app.UseAuthorization();
+        app.UseResponseCaching();
         app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
         app.Use((context, next) =>
