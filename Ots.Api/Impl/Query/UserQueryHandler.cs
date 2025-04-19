@@ -1,4 +1,5 @@
 using AutoMapper;
+using LinqKit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Ots.Api.Domain;
@@ -29,8 +30,10 @@ IRequestHandler<GetUserByIdQuery, ApiResponse<UserResponse>>
 
     public async Task<ApiResponse<UserResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        var User = await context.Set<User>()
-           .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        var predicate = PredicateBuilder.New<User>(true);
+        predicate = predicate.And(x => x.Id == request.Id);
+
+        var User = await context.Set<User>().FirstOrDefaultAsync(predicate, cancellationToken);
 
         var mapped = mapper.Map<UserResponse>(User);
         return new ApiResponse<UserResponse>(mapped);

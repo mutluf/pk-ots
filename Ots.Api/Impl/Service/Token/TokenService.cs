@@ -41,7 +41,6 @@ public class TokenService : ITokenService
     {
         var claims = new List<Claim>
         {
-            new Claim("Role", user.Role),
             new Claim("FirstName", user.FirstName),
             new Claim("LastName", user.LastName),
             new Claim("UserName", user.UserName),

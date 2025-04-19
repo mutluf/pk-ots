@@ -13,19 +13,19 @@ IRequestHandler<CreateAccountCommand, ApiResponse<AccountResponse>>,
 IRequestHandler<UpdateAccountCommand, ApiResponse>,
 IRequestHandler<DeleteAccountCommand, ApiResponse>
 {
-    private readonly OtsDbContext dbContext;
+    private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
 
-    public AccountCommandHandler(OtsDbContext dbContext, IMapper mapper)
+    public AccountCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        this.dbContext = dbContext;
+        this.unitOfWork = unitOfWork;
         this.mapper = mapper;
     }
 
     public async Task<ApiResponse> Handle(DeleteAccountCommand request, CancellationToken cancellationToken)
     {
         // check if account exists
-        var entity = await dbContext.Set<Account>().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        var entity = await unitOfWork.AccountRepository.GetByIdAsync(request.Id);
         if (entity == null)
             return new ApiResponse("Account not found");
 
@@ -39,13 +39,14 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
         entity.UpdatedUser = null;
 
         // update record
-        await dbContext.SaveChangesAsync(cancellationToken);
+        unitOfWork.AccountRepository.Delete(entity);
+        await unitOfWork.Complete();
         return new ApiResponse();
     }
 
     public async Task<ApiResponse> Handle(UpdateAccountCommand request, CancellationToken cancellationToken)
     {
-        var entity = await dbContext.Set<Account>().FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+        var entity = await unitOfWork.AccountRepository.GetByIdAsync(request.Id);
         if (entity == null)
             return new ApiResponse("Account not found");
 
@@ -54,7 +55,8 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
 
         entity.Name = request.Account.Name;
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        unitOfWork.AccountRepository.Update(entity);
+        await unitOfWork.Complete();
         return new ApiResponse();
     }
 
@@ -66,11 +68,10 @@ IRequestHandler<DeleteAccountCommand, ApiResponse>
         mapped.IBAN = "TR" + mapped.AccountNumber.ToString("D20");
         mapped.Balance = 0;
         mapped.OpenDate = DateTime.Now;
-        
-        var entity = await dbContext.AddAsync(mapped, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
-        var response = mapper.Map<AccountResponse>(entity.Entity);
 
+        var entity = await unitOfWork.AccountRepository.AddAsync(mapped);
+        await unitOfWork.Complete();
+        var response = mapper.Map<AccountResponse>(entity);
         return new ApiResponse<AccountResponse>(response);
     }
 }
