@@ -36,10 +36,23 @@ public class UnitOfWork : IUnitOfWork, IDisposable
             }
         }
     }
-    public void Dispose()
+    protected virtual void Dispose(bool disposing)
     {
-        dbContext.Dispose();
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                dbContext.Dispose();
+            }
+        }
+        _disposed = true;
     }
 
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+    private bool _disposed = false;
 
 }
