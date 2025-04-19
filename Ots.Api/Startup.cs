@@ -13,6 +13,7 @@ using Ots.Api.Impl.Validation;
 using Ots.Api.Mapper;
 using Ots.Api.Middleware;
 using Ots.Base;
+using Serilog;
 
 namespace Ots.Api;
 
@@ -111,7 +112,7 @@ public class Startup
             return appSession;
         });
 
-        
+
     }
 
 
@@ -126,7 +127,16 @@ public class Startup
 
         app.UseMiddleware<HeartBeatMiddleware>();
         app.UseMiddleware<ErrorHandlerMiddleware>();
-        app.UseMiddleware<RequestLoggingMiddleware>();
+
+        Action<RequestProfilerModel> requestResponseHandler = requestProfilerModel =>
+        {
+            Log.Information("-------------Request-Begin------------");
+            Log.Information(requestProfilerModel.Request);
+            Log.Information(Environment.NewLine);
+            Log.Information(requestProfilerModel.Response);
+            Log.Information("-------------Request-End------------");
+        };
+        app.UseMiddleware<RequestLoggingMiddleware>(requestResponseHandler);
 
         app.UseHttpsRedirection();
         app.UseAuthentication();

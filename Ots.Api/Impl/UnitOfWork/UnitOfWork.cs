@@ -1,5 +1,6 @@
 using Ots.Api.Domain;
 using Ots.Api.Impl.GenericRepository;
+using Serilog;
 
 namespace Ots.Api.Impl;
 
@@ -31,6 +32,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error occurred while saving changes to the database.");
                 await transaction.RollbackAsync();
                 throw;
             }

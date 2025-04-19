@@ -1,0 +1,27 @@
+2025-04-19 13:33:06.792 [INF] LogAuthorizationFilter.OnAuthorization
+2025-04-19 13:33:06.793 [INF] LogResourceFilter.OnResourceExecuting
+2025-04-19 13:33:06.796 [INF] LogActionFilter.OnActionExecuting
+2025-04-19 13:33:06.845 [INF] LogActionFilter.OnActionExecuted
+2025-04-19 13:33:06.845 [INF] LogResultFilter.OnResultExecuting
+2025-04-19 13:33:06.846 [INF] LogResultFilter.OnResultExecuted
+2025-04-19 13:33:06.846 [INF] LogResourceFilter.OnResourceExecuted
+2025-04-19 13:33:06.846 [INF] -------------Request-Begin------------
+2025-04-19 13:33:06.846 [INF] Http Request Information: 
+Schema:http 
+Host: localhost:5202 
+Path: /api/Authorization/Token 
+QueryString:  
+Request Body: {
+  "userName": "string",
+  "password": "string"
+}
+2025-04-19 13:33:06.846 [INF] 
+
+2025-04-19 13:33:06.846 [INF] Http Response Information: 
+Schema:http 
+Host: localhost:5202 
+Path: /api/Authorization/Token 
+QueryString:  
+StatusCode: 200 
+Response Body: {"serverDate":"2025-04-19T10:33:06.845078Z","referenceNo":"0161efa6-ca67-4c69-ae38-2571bd4df73e","success":false,"message":"User name or password is incorrect","response":null}
+2025-04-19 13:33:06.846 [INF] -------------Request-End------------

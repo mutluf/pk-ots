@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ots.Api.Domain;
+using Ots.Api.Filter;
 using Ots.Api.Impl.Cqrs;
 using Ots.Base;
 using Ots.Schema;
@@ -19,6 +20,11 @@ public class AuthorizationController : ControllerBase
     }
 
     [HttpPost("Token")]
+    [TypeFilter(typeof(LogResourceFilter))]
+    [TypeFilter(typeof(LogActionFilter))]
+    [TypeFilter(typeof(LogAuthorizationFilter))]
+    [TypeFilter(typeof(LogResultFilter))]
+    [TypeFilter(typeof(LogExceptionFilter))]
     public async Task<ApiResponse<AuthorizationResponse>> Post([FromBody] AuthorizationRequest request)
     {
         var operation = new CreateAuthorizationTokenCommand(request);
