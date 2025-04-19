@@ -10,7 +10,6 @@ namespace Ots.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class MoneyTransfersController : ControllerBase
 {
     private readonly IMediator mediator;
@@ -20,6 +19,7 @@ public class MoneyTransfersController : ControllerBase
     }
 
     [HttpGet("GetByParameters")]
+    [Authorize(Roles = "admin,user")]
     public async Task<ApiResponse<List<MoneyTransferResponse>>> GetByParameters()
     {
         var operation = new GetMoneyTransferByParametersQuery();
@@ -28,6 +28,7 @@ public class MoneyTransfersController : ControllerBase
     }
 
     [HttpGet("GetById/{id}")]
+    [Authorize(Roles = "admin,user")]
     public async Task<ApiResponse<MoneyTransferResponse>> GetByIdAsync([FromRoute] int id)
     {
         var operation = new GetMoneyTransferByIdQuery(id);
@@ -36,6 +37,7 @@ public class MoneyTransfersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "user")]
     public async Task<ApiResponse<TransactionResponse>> Post([FromBody] MoneyTransferRequest MoneyTransfer)
     {
         var operation = new CreateMoneyTransferCommand(MoneyTransfer);

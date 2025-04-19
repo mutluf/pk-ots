@@ -1,8 +1,8 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Ots.Api.Impl.Cqrs;
 using Ots.Base;
-using Microsoft.AspNetCore.Authorization;
 using Ots.Schema;
 
 namespace Ots.Api.Controllers;
@@ -10,7 +10,6 @@ namespace Ots.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IMediator mediator;
@@ -21,6 +20,7 @@ public class UsersController : ControllerBase
 
 
     [HttpGet("GetAll")]
+    [Authorize(Roles = "admin")]
     public async Task<ApiResponse<List<UserResponse>>> GetAll()
     {
         var operation = new GetAllUsersQuery();
@@ -29,6 +29,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("GetById/{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<ApiResponse<UserResponse>> GetByIdAsync([FromRoute] int id)
     {
         var operation = new GetUserByIdQuery(id);
@@ -37,6 +38,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ApiResponse<UserResponse>> Post([FromBody] UserRequest User)
     {
         var operation = new CreateUserCommand(User);
@@ -45,6 +47,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<ApiResponse> Put([FromRoute] int id, [FromBody] UserRequest User)
     {
         var operation = new UpdateUserCommand(id,User);
@@ -52,6 +55,7 @@ public class UsersController : ControllerBase
         return result;
     }
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<ApiResponse> Delete([FromRoute] int id)
     {
         var operation = new DeleteUserCommand(id);
